@@ -1,109 +1,85 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   movements.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: astoiano <astoiano@student.42barcel>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/02 17:37:09 by astoiano          #+#    #+#             */
+/*   Updated: 2024/02/03 07:02:41 by astoiano         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "push_swap.h"
-#include <stdio.h>
 
-void swap_a(int *stack_a, int print)
+void	push_a(t_list **stack_a, t_list **stack_b)
 {
-	int temp;
+	t_list	*temp;
 
-	if(!stack_a || !stack_a[1])
+	if (*stack_b == NULL)
 		return ;
-	temp = stack_a[0];
-	stack_a[0] = stack_a[1];
-	stack_a[1] = temp;
-	if (print == 1)
-		printf("sa\n");
+	temp = *stack_a;
+	*stack_a = *stack_b;
+	*stack_b = (*stack_b)->next;
+	(*stack_a)->next = temp;
+	write(1, "pa\n", 3);
 }
 
-void swap_b(int *stack_b, int print)
+void	push_b(t_list **stack_a, t_list **stack_b)
 {
-	int temp;
+	t_list	*temp;
 
-	if(!stack_b || !stack_b[1])
+	if (*stack_a == NULL)
 		return ;
-	temp = stack_b[0];
-	stack_b[0] = stack_b[1];
-	stack_b[1] = temp;
-	if (print == 1)
-		printf("sb\n");
+	temp = *stack_b;
+	*stack_b = *stack_a;
+	*stack_a = (*stack_a)->next;
+	(*stack_b)->next = temp;
+	write(1, "pb\n", 3);
 }
 
-void push_a(int *stack_a, int *stack_b)
+void	swap(t_list **stack)
 {
-	if (!stack_b)
+	t_list	*list;
+	t_list	*node1;
+	t_list	*node2;
+
+	list = *stack;
+	if (!list || !list->next)
 		return ;
-	shift_elem(stack_a, 1);
-	stack_a[0] = stack_b[0];
-	stack_b[0] = 0;
-	shift_elem(stack_b, -1);
-	printf("pa\n");
+	node1 = list;
+	node2 = list->next;
+	node1->next = node2->next;
+	node2->next = node1;
+	*stack = node2;
 }
 
-void push_b(int *stack_a, int *stack_b)
+void	rotate(t_list **stack)
 {
-//	if (!stack_a)
-//		return ;
-	shift_elem(stack_b, 1);
-	stack_b[0] = stack_a[0];
-	stack_a[0] = 0;
-	shift_elem(stack_a, -1);
-	printf("pb");
+	t_list	*first;
+	t_list	*list;
+
+	first = *stack;
+	*stack = (*stack)->next;
+	list = *stack;
+	while (list->next != NULL)
+		list = list->next;
+	list->next = first;
+	first->next = NULL;
 }
 
-void shift_elem(int *stack, int direc)
+void	rev_rot(t_list **stack)
 {
-	int i;
-	int size = 5;
+	t_list	*list;
+	t_list	*last;
+	t_list	*first;
 
-//	if (stack[0] == 0)
-//		return ;
-	if (direc == 1)
-	{
-		i = size;
-		while(i > 0)
-		{
-			stack[i] = stack[i -1];
-			i--;
-		}
-	}
-	else
-	{
-		i = 0;
-		while (i < size)
-		{
-			stack[i] = stack[i +1];
-			i++;
-		}
-	}
-}
-
-void print_arr(int *arr, int size)
-{
-	int i;
-
-	i = 0;
-	while (i < size)
-	{
-		printf("%d\n", arr[i]);
-		i++;
-	}
-}
-
-int main()
-{
-	int size = 5;
-	int stack_a[5] = {187, 7, 53, 4,0};
-	int stack_b[5] = {0,0,0,0,0};
-	print_arr(stack_a, size);
-//	swap_a(stack_a);
-//	printf("swap\n");
-//	print_arr(stack_a, size);
-	push_b(stack_a, stack_b);
-	printf("push_b\n");
-	print_arr(stack_b, size);
-	push_b(stack_a, stack_b);
-	printf("push_b\n");
-	print_arr(stack_b, size);
-	swap_b(stack_b);
-	printf("swap\n");
-	print_arr(stack_b, size);
+	first = *stack;
+	list = *stack;
+	while (list->next->next != NULL)
+		list = list->next;
+	last = list->next;
+	list->next = NULL;
+	last->next = first;
+	*stack = last;
 }
